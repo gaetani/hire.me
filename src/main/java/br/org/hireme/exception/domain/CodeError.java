@@ -3,7 +3,7 @@ package br.org.hireme.exception.domain;
 public enum CodeError {
 
     CUSTOM_ALIAS_ALREADY_EXISTS("001", "CUSTOM ALIAS ALREADY EXISTS"),
-    SHORTENED_ALIAS_ALREADY_EXISTS("002", "SHORTENED URL NOT FOUND");
+    SHORTENED_URL_NOT_FOUND("002", "SHORTENED URL NOT FOUND");
 
     private String code;
     private String description;

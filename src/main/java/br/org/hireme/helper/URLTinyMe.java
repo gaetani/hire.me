@@ -3,6 +3,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.UUID;
+
 /**
  *
  * Given a input string create a random
@@ -28,7 +30,7 @@ public class URLTinyMe {
     }
 
     public static String encode(String url) {
-       return encode(fromBase26(url));
+       return encode(fromBase26(UUID.randomUUID().toString()));
     }
 
     public static int decode(String str) {
