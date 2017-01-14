@@ -37,6 +37,7 @@ dependencies {
     compile group: 'org.elasticsearch.client', name: 'rest', version: '5.1.1'
     // https://mvnrepository.com/artifact/com.google.inject/guice
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
+    compile group: 'net.openhft', name: 'lang', version: '6.8.2'
 
 
     compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.4.1'

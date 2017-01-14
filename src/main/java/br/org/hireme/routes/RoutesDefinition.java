@@ -1,6 +1,8 @@
 package br.org.hireme.routes;
 
 import br.org.hireme.controller.IShortenerController;
+import br.org.hireme.exception.BusinessException;
+import br.org.hireme.handler.RequestLogHandler;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
@@ -36,74 +38,9 @@ public class RoutesDefinition implements IRoutesDefinition {
         this.shortenerController = shortenerController;
     }
 
-    private RestClient restClient = RestClient.builder(
-            new HttpHost("localhost", 9200, "http")).build();
-
-
     private void beforeRoutes(){
         //ensure user is logged in to have access to protected routes
-        before((req, res) -> {
-            Instant begin = Instant.now();
-            req.attribute("begin", begin);
-
-            Gson gson = new Gson();
-
-            JsonObject request = new JsonObject();
-            JsonObject header = new JsonObject();
-            JsonObject param = new JsonObject();
-
-            (req.headers().stream()).forEach(name -> header.addProperty(name, req.headers(name)));
-            (req.queryParams().stream()).forEach(name -> param.addProperty(name, req.queryParams(name)));
-
-            DateTimeFormatter formatador =
-                    DateTimeFormatter.ISO_INSTANT;
-            request.addProperty("user-agent", req.userAgent());
-            request.addProperty("content-length", req.contentLength());
-            request.addProperty("content-type", req.contentType());
-            request.addProperty("body", req.body());
-            request.addProperty("context-path", req.contextPath());
-            request.addProperty("ip", req.ip());
-            request.addProperty("request-method", req.requestMethod());
-            request.addProperty("scheme", req.scheme());
-            request.addProperty("url", req.url());
-            request.addProperty("host", req.host());
-            request.addProperty("uri", req.uri());
-            request.addProperty("path-info", req.pathInfo());
-            request.addProperty("protocol", req.protocol());
-            request.addProperty("query-string", req.queryString());
-            request.addProperty("timestamp", formatador.format(begin));
-
-            request.add("params", param);
-            request.add("headers", header);
-
-            //index a document
-            try {
-                HttpEntity entity = new NStringEntity(gson.toJson(request), ContentType.APPLICATION_JSON);
-                restClient.performRequestAsync(
-                        "POST",
-                        "/hiremerequest1/log",
-                        Collections.<String, String>emptyMap(),
-                        entity,
-                        new ResponseListener() {
-                            @Override
-                            public void onSuccess(Response response) {
-                                System.out.println(response);
-                            }
-
-                            @Override
-                            public void onFailure(Exception exception) {
-                                exception.printStackTrace();
-                            }
-                        });
-
-
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-
-
-        });
-
+        before((req, res) -> RequestLogHandler.logRequest(req, res));
     }
 
 
@@ -116,25 +53,25 @@ public class RoutesDefinition implements IRoutesDefinition {
 
     }
 
+    private void configureExceptions(){
+        exception(BusinessException.class, (exception, request, response) -> {
+            // Handle the exception hereJsonObject timeTaken = new JsonObject();
+
+
+            BusinessException businessException = (BusinessException) exception;
+            JsonObject exceptionObject = new JsonObject();
+            exceptionObject.addProperty("alias", businessException.getAlias());
+            exceptionObject.addProperty("err_code", businessException.getCodeError().getCode());
+            exceptionObject.addProperty("description", businessException.getCodeError().getDescription());
+            response.status(businessException.getCodeError().getHttpCode());
+            response.body(new Gson().toJson(exceptionObject));
+        });
+    }
+
 
     private void afterRoutes(){
         after((req, res) -> {
-            Instant begin = req.attribute("begin");
-            Duration duration = Duration.between(begin, Instant.now());
-
-            DateTimeFormatter formatador =
-                    DateTimeFormatter.ISO_INSTANT;
-
-            long seconds = duration.getSeconds();
-            long absSeconds = Math.abs(seconds);
-            String positive = String.format(
-                    "%d:%02d:%02d",
-                    absSeconds / 3600,
-                    (absSeconds % 3600) / 60,
-                    absSeconds % 60);
-
-            res.body(res.body() + "\netere:"+positive);
-
+            //Nothing yet
         });
     }
 
@@ -171,5 +108,6 @@ public class RoutesDefinition implements IRoutesDefinition {
         beforeRoutes();
         configureRoutes();
         afterRoutes();
+        configureExceptions();
     }
 }

@@ -2,13 +2,15 @@ package br.org.hireme.exception.domain;
 
 public enum CodeError {
 
-    CUSTOM_ALIAS_ALREADY_EXISTS("001", "CUSTOM ALIAS ALREADY EXISTS"),
-    SHORTENED_URL_NOT_FOUND("002", "SHORTENED URL NOT FOUND");
+    CUSTOM_ALIAS_ALREADY_EXISTS(401, "001", "CUSTOM ALIAS ALREADY EXISTS"),
+    SHORTENED_URL_NOT_FOUND(404, "002", "SHORTENED URL NOT FOUND");
 
+    private int httpCode;
     private String code;
     private String description;
 
-    CodeError(String code, String description){
+    CodeError(int httpCode, String code, String description){
+        this.httpCode = httpCode;
         this.code = code;
         this.description = description;
     }
@@ -19,5 +21,9 @@ public enum CodeError {
 
     public String getDescription() {
         return description;
+    }
+
+    public int getHttpCode() {
+        return httpCode;
     }
 }

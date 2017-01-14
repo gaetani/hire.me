@@ -1,6 +1,7 @@
 package br.org.hireme.domain;
 
 
+import com.google.gson.annotations.Expose;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.*;
 
@@ -12,7 +13,10 @@ public class Shortener {
 
     @Id
     private ObjectId id;
+
+    @Expose
     private String url;
+    @Expose
     private String alias;
 
 

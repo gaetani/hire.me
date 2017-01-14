@@ -39,16 +39,16 @@ public class ShortenerService implements IShortenerService {
 
     private String getUniqueAlias(String url) {
         String alias = EMPTY;
-        do{
-            alias = URLTinyMe.encode(url);
-        } while (shortenerDao.checkExistent(alias));
+       // do{
+            alias = URLTinyMe.encode();
+     //   } while (shortenerDao.checkExistent(alias));
 
         return alias;
     }
 
     private void validAlias(String alias){
         if(alias.equals("invalid")){
-            throw new BusinessException(CodeError.CUSTOM_ALIAS_ALREADY_EXISTS);
+            throw new BusinessException(CodeError.CUSTOM_ALIAS_ALREADY_EXISTS, alias);
         }
     }
 
@@ -56,6 +56,6 @@ public class ShortenerService implements IShortenerService {
     public Shortener getUrl(String alias) {
 
         Optional<Shortener> shortenerOptional = shortenerDao.findBy(alias);
-        return shortenerOptional.orElseThrow(() -> new BusinessException(CodeError.SHORTENED_URL_NOT_FOUND));
+        return shortenerOptional.orElseThrow(() -> new BusinessException(CodeError.SHORTENED_URL_NOT_FOUND, alias));
     }
 }
