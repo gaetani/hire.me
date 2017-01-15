@@ -1,5 +1,6 @@
 package br.org.hireme.dao;
 
+import br.org.hireme.domain.Sequence;
 import br.org.hireme.domain.Shortener;
 
 import java.util.Optional;

@@ -13,6 +13,8 @@ import org.apache.http.nio.entity.NStringEntity;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.ResponseListener;
 import org.elasticsearch.client.RestClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 
@@ -30,6 +32,8 @@ import static spark.Spark.*;
 
 public class RoutesDefinition implements IRoutesDefinition {
 
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoutesDefinition.class);
 
     private IShortenerController shortenerController;
 
@@ -56,8 +60,6 @@ public class RoutesDefinition implements IRoutesDefinition {
     private void configureExceptions(){
         exception(BusinessException.class, (exception, request, response) -> {
             // Handle the exception hereJsonObject timeTaken = new JsonObject();
-
-
             BusinessException businessException = (BusinessException) exception;
             JsonObject exceptionObject = new JsonObject();
             exceptionObject.addProperty("alias", businessException.getAlias());
@@ -66,6 +68,23 @@ public class RoutesDefinition implements IRoutesDefinition {
             response.status(businessException.getCodeError().getHttpCode());
             response.body(new Gson().toJson(exceptionObject));
         });
+
+        exception(Exception.class, (exception, request, response) -> {
+            // Handle the exception hereJsonObject timeTaken = new JsonObject();
+            exception.printStackTrace();
+            LOGGER.error("Exception nao tratada", exception);
+        });
+
+        notFound((req, res) -> {
+            res.type("application/json");
+            return "{\"message\":\"Custom 404\"}";
+        });
+
+        internalServerError((req, res) -> {
+            res.type("application/json");
+            return "{\"message\":\"Custom 500 handling\"}";
+        });
+
     }
 
 

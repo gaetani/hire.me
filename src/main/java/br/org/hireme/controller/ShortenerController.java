@@ -51,6 +51,7 @@ public class ShortenerController implements IShortenerController {
         timeTaken.addProperty("time_taken", positive);
         jsonShort.add("statistics", timeTaken);
 
+        response.status(200);
 
         return jsonShort.toString();
     }

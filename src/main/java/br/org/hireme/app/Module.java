@@ -2,7 +2,9 @@ package br.org.hireme.app;
 
 import br.org.hireme.controller.IShortenerController;
 import br.org.hireme.controller.ShortenerController;
+import br.org.hireme.dao.ISequenceDao;
 import br.org.hireme.dao.IShortenerDao;
+import br.org.hireme.dao.SequenceDao;
 import br.org.hireme.dao.ShortenerDao;
 import br.org.hireme.infraestructure.morphia.DatastoreConnector;
 import br.org.hireme.routes.IRoutesDefinition;
@@ -53,6 +55,7 @@ public class Module extends AbstractModule implements TypeListener {
     protected void configure() {
 
 
+        bind(ISequenceDao.class).to(SequenceDao.class);
         bind(IShortenerDao.class).to(ShortenerDao.class);
         bind(IShortenerService.class).to(ShortenerService.class);
         bind(IShortenerController.class).to(ShortenerController.class);

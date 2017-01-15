@@ -1,10 +1,12 @@
 package br.org.hireme.dao;
 
+import br.org.hireme.domain.Sequence;
 import br.org.hireme.domain.Shortener;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Key;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 
 import java.util.Optional;
 

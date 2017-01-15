@@ -1,5 +1,6 @@
 package br.org.hireme.service;
 
+import br.org.hireme.dao.ISequenceDao;
 import br.org.hireme.dao.IShortenerDao;
 import br.org.hireme.dao.ShortenerDao;
 import br.org.hireme.domain.Shortener;
@@ -19,10 +20,12 @@ public class ShortenerService implements IShortenerService {
     private static final String EMPTY = "";
 
     private IShortenerDao shortenerDao;
+    private ISequenceDao sequenceDao;
 
     @Inject
-    public ShortenerService(IShortenerDao shortenerDao){
+    public ShortenerService(IShortenerDao shortenerDao, ISequenceDao sequenceDao){
         this.shortenerDao = shortenerDao;
+        this.sequenceDao = sequenceDao;
     }
 
     @Override
@@ -39,9 +42,7 @@ public class ShortenerService implements IShortenerService {
 
     private String getUniqueAlias(String url) {
         String alias = EMPTY;
-       // do{
-            alias = URLTinyMe.encode();
-     //   } while (shortenerDao.checkExistent(alias));
+        alias = URLTinyMe.encode(sequenceDao.nextSequence("shortener").getValue());
 
         return alias;
     }

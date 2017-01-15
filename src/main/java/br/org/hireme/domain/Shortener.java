@@ -4,10 +4,11 @@ package br.org.hireme.domain;
 import com.google.gson.annotations.Expose;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.*;
+import org.mongodb.morphia.utils.IndexType;
 
 @Entity("shortener")
 @Indexes(
-        @Index(value = "alias", fields = @Field("alias"))
+        @Index(value = "alias", fields = @Field(value = "alias", type = IndexType.TEXT))
 )
 public class Shortener {
 
@@ -16,7 +17,9 @@ public class Shortener {
 
     @Expose
     private String url;
+
     @Expose
+    @Indexed(options = @IndexOptions(unique = true))
     private String alias;
 
 
