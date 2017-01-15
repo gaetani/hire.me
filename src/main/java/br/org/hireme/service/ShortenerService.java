@@ -48,9 +48,9 @@ public class ShortenerService implements IShortenerService {
     }
 
     private void validAlias(String alias){
-        if(alias.equals("invalid")){
+        shortenerDao.findBy(alias).ifPresent(shortener -> {
             throw new BusinessException(CodeError.CUSTOM_ALIAS_ALREADY_EXISTS, alias);
-        }
+        });
     }
 
     @Override
