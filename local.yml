@@ -1,0 +1,31 @@
+---
+- hosts:
+  vars:
+  become: yes
+  roles:
+    - role: build-essential      
+    - role: ntp
+      tags: ntp      
+    - role: java
+    - role: mongo
+      tags: mongo    
+    - role: mysql
+    - role: statsd
+      tags: statsd          
+    - role: elasticsearch
+      tags: elasticsearch
+    - role: logstash
+      tags: logstash
+    - role: kibana
+      tags: kibana
+  tasks:
+    - file: path='/etc/localtime' state=absent  
+      tags: brtime
+    - name: set time to Brazil
+      file: src='/usr/share/zoneinfo/America/Sao_Paulo' dest='/etc/localtime' owner=root group=root state=link  
+      tags: brtime
+
+    - name: add vagrant summary
+      include: tasks/summary.yml
+      tags: summary
+...
